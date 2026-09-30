@@ -25,7 +25,8 @@
 ## 4. Báo cáo và ứng dụng
 - [ ] Báo cáo đầy đủ, có biểu đồ hiệu suất tích lũy  
   **Trạng thái:** đã tạo cumulative-performance figure, drawdown figure và các bảng kết quả; chưa viết báo cáo hoàn chỉnh.
-- [ ] Danh mục tài liệu tham khảo tối thiểu 15 tài liệu
+- [x] Danh mục tài liệu tham khảo tối thiểu 15 tài liệu  
+  **Trạng thái:** `docs/literature/REFERENCES.md` hiện có 22 nguồn gồm Deep Hedging, CVaR, Heston, futures hedging, volatility và nguồn chính thức VN30 futures.
 - [x] Đưa cấu trúc mã nguồn tái lập lên GitHub
 - [x] Hoàn thiện `requirements.txt` với phiên bản môi trường cuối cùng
 - [ ] Nêu ứng dụng thực tiễn cho nhà đầu tư sử dụng VN30 futures
