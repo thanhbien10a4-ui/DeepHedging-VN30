@@ -47,6 +47,10 @@ logs/
 data/processed/*
 !data/processed/.gitkeep
 
+# Synthetic Monte Carlo datasets can become large; regenerate from code/config.
+data/synthetic/*
+!data/synthetic/.gitkeep
+
 # Experiment scratch outputs
 experiments/**/runs/
 experiments/**/checkpoints/
