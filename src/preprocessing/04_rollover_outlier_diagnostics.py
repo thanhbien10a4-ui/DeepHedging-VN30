@@ -14,17 +14,19 @@ Outputs:
 
 Important:
 - This script does NOT delete or modify any observations.
-- "Near expiry" is a calendar heuristic based on the official VN30 futures
-  final trading day rule (third Thursday of expiry month; preceding trading
-  day when that Thursday is a holiday). Exact holiday-adjusted expiry dates
-  should be verified separately if a flagged date is used in the final report.
+- "Near expiry" is a calendar heuristic based on the standard VN30 futures
+  final trading day convention (third Thursday of expiry month; exact
+  holiday-adjusted dates should be verified separately before excluding data).
+- A basis jump is NOT automatically treated as a rollover artifact. Market
+  shocks, non-expiry basis dislocations and expiry-adjacent anomalies are
+  reported separately.
 """
 
 from __future__ import annotations
 
 import calendar
 import json
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -84,8 +86,8 @@ def main() -> None:
     df["basis_velocity_1"] = df["basis_pct"].diff()
     df["return_gap"] = df["fut_log_return"] - df["spot_log_return"]
 
-    # Robust outlier scores are preferable to standard z-scores here because
-    # the EDA already showed strong skewness and excess kurtosis.
+    # Robust scores are preferable to ordinary z-scores because the EDA showed
+    # substantial skewness and excess kurtosis.
     for col in ["spot_log_return", "fut_log_return", "basis_velocity_1", "return_gap"]:
         df[f"rz_{col}"] = robust_zscore(df[col])
 
@@ -99,30 +101,43 @@ def main() -> None:
         df["days_from_third_thursday"].abs() <= EXPIRY_WINDOW_CALENDAR_DAYS
     )
 
-    # Classification is diagnostic only; it is deliberately conservative.
+    # Market-wide shock: spot and futures both move abnormally in the same direction.
     df["market_shock"] = (
         (df["rz_spot_log_return"].abs() >= MARKET_SHOCK_Z_THRESHOLD)
         & (df["rz_fut_log_return"].abs() >= MARKET_SHOCK_Z_THRESHOLD)
         & same_sign(df["spot_log_return"], df["fut_log_return"])
     )
 
+    # Futures-specific jump: futures moves abnormally while spot does not.
     df["futures_specific_jump"] = (
         (df["rz_fut_log_return"].abs() >= ROBUST_Z_THRESHOLD)
         & (df["rz_spot_log_return"].abs() < MARKET_SHOCK_Z_THRESHOLD)
     )
 
-    df["basis_jump"] = (
-        df["rz_basis_velocity_1"].abs() >= ROBUST_Z_THRESHOLD
-    )
+    df["basis_jump"] = df["rz_basis_velocity_1"].abs() >= ROBUST_Z_THRESHOLD
+    df["return_gap_jump"] = df["rz_return_gap"].abs() >= ROBUST_Z_THRESHOLD
 
-    df["possible_roll_artifact"] = (
-        df["basis_jump"]
-        & (
-            df["near_expiry_calendar"]
-            | (df["rz_return_gap"].abs() >= ROBUST_Z_THRESHOLD)
-            | df["futures_specific_jump"]
-        )
-    )
+    # IMPORTANT: basis_velocity and return_gap are mechanically related, so a
+    # large return gap must NOT be used by itself to call something a roll artifact.
+    # We separate the cases instead.
+    df["expiry_basis_jump"] = df["basis_jump"] & df["near_expiry_calendar"]
+
+    # Strongest rollover candidate: large basis jump close to expiry that is not
+    # already explained as a broad market shock. This is still only a diagnostic
+    # flag, not proof of an actual contract switch.
+    df["likely_roll_related"] = df["expiry_basis_jump"] & (~df["market_shock"])
+
+    # Large basis jump close to expiry during a genuine market-wide shock.
+    # Keep ambiguous rather than automatically attributing it to rollover.
+    df["ambiguous_expiry_shock"] = df["expiry_basis_jump"] & df["market_shock"]
+
+    # Large basis movement away from the expiry window. These observations may
+    # represent real market dislocations, data-source continuous-contract effects,
+    # liquidity events, or other microstructure effects and need separate review.
+    df["non_expiry_basis_dislocation"] = df["basis_jump"] & (~df["near_expiry_calendar"])
+
+    # Backward-compatible name used by the first version of this diagnostic.
+    df["possible_roll_artifact"] = df["likely_roll_related"]
 
     display_cols = [
         "time",
@@ -143,6 +158,11 @@ def main() -> None:
         "market_shock",
         "futures_specific_jump",
         "basis_jump",
+        "return_gap_jump",
+        "expiry_basis_jump",
+        "likely_roll_related",
+        "ambiguous_expiry_shock",
+        "non_expiry_basis_dislocation",
         "possible_roll_artifact",
     ]
 
@@ -157,7 +177,7 @@ def main() -> None:
     top_spot = top_abs("spot_log_return")
 
     flagged = df.loc[
-        df["possible_roll_artifact"]
+        df["basis_jump"]
         | df["futures_specific_jump"]
         | df["market_shock"],
         display_cols,
@@ -169,16 +189,16 @@ def main() -> None:
     top_spot.to_csv(tables_dir / "top_spot_return.csv", index=False, date_format="%Y-%m-%d")
     flagged.to_csv(tables_dir / "rollover_flagged_dates.csv", index=False, date_format="%Y-%m-%d")
 
-    # Figures: one plot per figure (no subplots) for easy report reuse.
+    # Figures: one plot per figure for easy report reuse.
     fig = plt.figure(figsize=(12, 5))
     plt.plot(df["time"], df["basis_velocity_1"], linewidth=0.8)
-    flagged_roll = df[df["possible_roll_artifact"]]
-    if not flagged_roll.empty:
+    roll_candidates = df[df["likely_roll_related"]]
+    if not roll_candidates.empty:
         plt.scatter(
-            flagged_roll["time"],
-            flagged_roll["basis_velocity_1"],
+            roll_candidates["time"],
+            roll_candidates["basis_velocity_1"],
             s=22,
-            label="Possible roll artifact",
+            label="Likely roll-related candidate",
         )
         plt.legend()
     plt.title("VN30F1M Basis Velocity Diagnostics")
@@ -220,7 +240,12 @@ def main() -> None:
             "market_shock": int(df["market_shock"].sum()),
             "futures_specific_jump": int(df["futures_specific_jump"].sum()),
             "basis_jump": int(df["basis_jump"].sum()),
+            "return_gap_jump": int(df["return_gap_jump"].sum()),
             "near_expiry_calendar": int(df["near_expiry_calendar"].sum()),
+            "expiry_basis_jump": int(df["expiry_basis_jump"].sum()),
+            "likely_roll_related": int(df["likely_roll_related"].sum()),
+            "ambiguous_expiry_shock": int(df["ambiguous_expiry_shock"].sum()),
+            "non_expiry_basis_dislocation": int(df["non_expiry_basis_dislocation"].sum()),
             "possible_roll_artifact": int(df["possible_roll_artifact"].sum()),
         },
         "largest_abs_basis_velocity": [
@@ -229,7 +254,10 @@ def main() -> None:
                 "basis_velocity_1": float(row.basis_velocity_1),
                 "basis_pct": float(row.basis_pct),
                 "near_expiry_calendar": bool(row.near_expiry_calendar),
-                "possible_roll_artifact": bool(row.possible_roll_artifact),
+                "market_shock": bool(row.market_shock),
+                "likely_roll_related": bool(row.likely_roll_related),
+                "ambiguous_expiry_shock": bool(row.ambiguous_expiry_shock),
+                "non_expiry_basis_dislocation": bool(row.non_expiry_basis_dislocation),
             }
             for row in top_basis.head(10).itertuples()
         ],
@@ -237,8 +265,9 @@ def main() -> None:
             "raw_data_mutated": False,
             "automatic_outlier_deletion": False,
             "note": (
-                "Flags are diagnostic only. Confirm contract-roll/expiry context before "
-                "excluding or adjusting any observation for Heston estimation."
+                "Flags are diagnostic only. Do not exclude observations automatically. "
+                "Verify contract-roll/expiry context and distinguish market shocks from "
+                "continuous-contract construction effects before Heston estimation."
             ),
         },
     }
@@ -248,23 +277,27 @@ def main() -> None:
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
     print("=" * 72)
-    print("ROLLOVER / OUTLIER DIAGNOSTICS COMPLETE")
+    print("ROLLOVER / OUTLIER DIAGNOSTICS COMPLETE (v2)")
     print("=" * 72)
-    print(f"Rows                     : {len(df):,}")
-    print(f"Market shocks            : {int(df['market_shock'].sum())}")
-    print(f"Futures-specific jumps   : {int(df['futures_specific_jump'].sum())}")
-    print(f"Basis jumps              : {int(df['basis_jump'].sum())}")
-    print(f"Possible roll artifacts  : {int(df['possible_roll_artifact'].sum())}")
-    print(f"Summary                  : {summary_path}")
-    print(f"Tables                   : {tables_dir}")
-    print(f"Figures                  : {figures_dir}")
+    print(f"Rows                         : {len(df):,}")
+    print(f"Market shocks                : {int(df['market_shock'].sum())}")
+    print(f"Futures-specific jumps       : {int(df['futures_specific_jump'].sum())}")
+    print(f"Basis jumps                  : {int(df['basis_jump'].sum())}")
+    print(f"Expiry-adjacent basis jumps  : {int(df['expiry_basis_jump'].sum())}")
+    print(f"Likely roll-related          : {int(df['likely_roll_related'].sum())}")
+    print(f"Ambiguous expiry shocks      : {int(df['ambiguous_expiry_shock'].sum())}")
+    print(f"Non-expiry basis dislocation : {int(df['non_expiry_basis_dislocation'].sum())}")
+    print(f"Summary                      : {summary_path}")
+    print(f"Tables                       : {tables_dir}")
+    print(f"Figures                      : {figures_dir}")
     print()
     print("Top 10 absolute basis-velocity dates:")
     for row in top_basis.head(10).itertuples():
         print(
             f"  {row.time.date()} | dBasis={row.basis_velocity_1:+.6f} "
             f"| expiry_near={bool(row.near_expiry_calendar)} "
-            f"| roll_flag={bool(row.possible_roll_artifact)}"
+            f"| market_shock={bool(row.market_shock)} "
+            f"| likely_roll={bool(row.likely_roll_related)}"
         )
 
 
