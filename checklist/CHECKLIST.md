@@ -2,7 +2,7 @@
 
 ## 1. Dữ liệu và tiền xử lý
 - [x] Thu thập dữ liệu VN30 spot + VN30F1M futures 2017–2026
-- [ ] Tiền xử lý: log-return, rolling window, feature engineering
+- [x] Tiền xử lý: log-return, rolling window, feature engineering
 - [ ] Xây dựng stock market simulator (phí, thuế, cơ chế thị trường phù hợp)
 - [ ] Calibrate Heston model trên dữ liệu VN30
 
