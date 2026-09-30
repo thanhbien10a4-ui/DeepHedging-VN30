@@ -1,0 +1,62 @@
+market:
+  underlying: VN30
+  hedge_instrument: VN30F1M
+  contract_multiplier_vnd_per_index_point: 100000
+  tick_size_index_points: 0.1
+  price_limit_fraction: 0.07
+  settlement_method: cash
+  last_trading_day_rule: third_thursday_of_expiry_month_adjust_previous_trading_day_if_holiday
+
+official_service_fees:
+  hnx_index_futures_trading_fee_vnd_per_contract_per_match: 2700
+  vsdc_pre_krx_position_management_fee_vnd_per_contract_account_day: 2550
+  vsdc_post_krx_clearing_fee_vnd_per_contract_offset: 2550
+  krx_go_live_date: '2025-05-05'
+  margin_asset_management_rate_per_month: 0.000024
+  margin_asset_management_min_vnd_per_account_month: 100000
+  margin_asset_management_max_vnd_per_account_month: 1600000
+  broker_commission_vnd_per_contract_per_match: null
+
+personal_income_tax:
+  tax_rate: 0.001
+  formula: tax = settlement_price * contract_multiplier * abs(delta_contracts) * initial_margin_rate / 2 * tax_rate
+  initial_margin_schedule_required: true
+  reference_rate_only_for_sanity_examples: 0.17
+  reference_rate_effective_example: '2024-12-20'
+  warning: Do not use the reference 17% rate as a full 2017-2026 historical schedule.
+
+execution_model:
+  hedge_ratio_interpretation: continuous_contract_equivalent
+  include_opening_trade: true
+  include_rebalancing_trades: true
+  include_closing_trade: true
+  slippage_model_status: pending_empirical_calibration
+  default_slippage_ticks: null
+  integer_contract_rounding_status: pending_portfolio_notional_definition
+
+known_limitations:
+  - VN30F1M is a continuous front-month series and does not contain explicit contract IDs.
+  - Exact historical roll execution and expiry settlement cannot be reconstructed from the daily continuous file alone.
+  - Margin-management fees are account-level monthly charges and should not be naively allocated per hedge trade.
+  - Broker commission is broker-specific and intentionally left unset.
+  - Historical VSDC initial-margin schedule must be completed before tax-inclusive historical backtests are called final.
+
+sources:
+  hnx_contract_spec:
+    title: HNX VN30 index futures contract specification
+    url: https://www.hnx.vn/vi-vn/huong-dan/chi-tiet-thu-tuc-36-65.html
+  ministry_of_finance_fee_schedule_2025:
+    title: Decision 1541/QD-BTC dated 29/04/2025
+    url: https://thuvienphapluat.vn/van-ban/Chung-khoan/Quyet-dinh-1541-QD-BTC-2025-muc-gia-dich-vu-trong-linh-vuc-chung-khoan-655310.aspx
+  krx_go_live:
+    title: HNX notice on official operation of the new IT system from 05/05/2025
+    url: https://hnx.vn/vi-vn/m-tin-tuc-hnx/Thong%20bao%20ve%20viec%20chinh%20thuc%20dua%20vao%20van%20hanh%20He%20thong%20cong%20nghe%20thong%20tin%20thi%20truong%20chung%20khoan%20Viet%20Nam-60020925-1.html
+  personal_income_tax_2017_guidance:
+    title: Official Letter 11133/BTC-CST 2017
+    url: https://thuvienphapluat.vn/cong-van/Thue-Phi-Le-Phi/Cong-van-11133-BTC-CST-2017-chinh-sach-thue-thu-nhap-tu-chuyen-nhuong-hop-dong-tuong-lai-366517.aspx
+  personal_income_tax_2026:
+    title: Circular 87/2026/TT-BTC
+    url: https://thuvienphapluat.vn/van-ban/Thue-Phi-Le-Phi/Thong-tu-87-2026-TT-BTC-huong-dan-Luat-Thue-thu-nhap-ca-nhan-Nghi-dinh-253-2026-ND-CP-713265.aspx
+  vsdc_reference_margin_2024_12:
+    title: VN30 futures initial margin effective 20/12/2024
+    url: https://vsdc.vn/vi/ad/177750
