@@ -1,17 +1,23 @@
-# Core numerical/data stack
-numpy
-pandas
-scipy
-scikit-learn
-statsmodels
+# Final project runtime environment
+# Python == 3.13.4 (CPython, Windows 11, AMD64)
+# Final deep-learning runs were CPU-only.
 
-# Visualization / notebooks
-matplotlib
-jupyter
+# Core numerical/data stack
+numpy==2.2.6
+pandas==2.3.3
+scipy==1.16.2
+scikit-learn==1.8.0
+statsmodels==0.14.6
+
+# Visualization
+matplotlib==3.10.3
 
 # Experiment configuration
-PyYAML
+PyYAML==6.0.3
 
-# Deep-learning framework will be pinned after the official project
-# environment is finalized. The legacy Deep Hedging repo has been run
-# in a separate environment using TensorFlow 2.12.0.
+# Deep-learning framework
+# Runtime reported torch 2.13.0+cpu; package metadata version is 2.13.0.
+torch==2.13.0
+
+# Optional notebook interface (NOT installed in the final environment):
+# jupyter
