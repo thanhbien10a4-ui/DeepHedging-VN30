@@ -62,13 +62,24 @@ def cir_variance_coefficient(v_t: np.ndarray, kappa: float, theta: float) -> np.
 
 def estimate_kappa_theta(v_t: np.ndarray, v_next: np.ndarray) -> tuple[float, float, dict]:
     """Fit CIR conditional mean with bounded nonlinear least squares."""
-    theta0 = float(np.nanmean(v_t))
-    # Rough persistence-based initial guess; safe fallback if correlation is poor.
+    theta0_raw = float(np.nanmean(v_t))
+
+    # Rough persistence-based initial guess.
+    # With a noisy daily variance proxy the implied annualized kappa can easily
+    # exceed 100, so use a wider upper bound and always clip x0 inside bounds.
     corr = np.corrcoef(v_t, v_next)[0, 1]
     if np.isfinite(corr) and 0.0 < corr < 0.999999:
-        kappa0 = max(-np.log(corr) / DT, 0.1)
+        kappa0_raw = max(-np.log(corr) / DT, 0.1)
     else:
-        kappa0 = 2.0
+        kappa0_raw = 2.0
+
+    lower = np.array([1e-4, 1e-8], dtype=float)
+    upper = np.array([1000.0, 4.0], dtype=float)
+
+    x0_raw = np.array([kappa0_raw, max(theta0_raw, 1e-6)], dtype=float)
+    # scipy.least_squares requires the starting point to be strictly feasible.
+    eps = np.array([1e-8, 1e-12], dtype=float)
+    x0 = np.minimum(np.maximum(x0_raw, lower + eps), upper - eps)
 
     def residuals(params: np.ndarray) -> np.ndarray:
         kappa, theta = params
@@ -79,8 +90,8 @@ def estimate_kappa_theta(v_t: np.ndarray, v_next: np.ndarray) -> tuple[float, fl
 
     result = least_squares(
         residuals,
-        x0=np.array([kappa0, max(theta0, 1e-6)]),
-        bounds=(np.array([1e-4, 1e-8]), np.array([100.0, 4.0])),
+        x0=x0,
+        bounds=(lower, upper),
         max_nfev=20_000,
     )
 
@@ -91,8 +102,13 @@ def estimate_kappa_theta(v_t: np.ndarray, v_next: np.ndarray) -> tuple[float, fl
         "optimizer_message": str(result.message),
         "cost": float(result.cost),
         "nfev": int(result.nfev),
-        "initial_kappa": float(kappa0),
-        "initial_theta": float(theta0),
+        "lag1_variance_proxy_corr": float(corr) if np.isfinite(corr) else None,
+        "initial_kappa_raw": float(kappa0_raw),
+        "initial_theta_raw": float(theta0_raw),
+        "initial_kappa_used": float(x0[0]),
+        "initial_theta_used": float(x0[1]),
+        "kappa_upper_bound": float(upper[0]),
+        "theta_upper_bound": float(upper[1]),
     }
     return kappa, theta, diagnostics
 
@@ -155,7 +171,6 @@ def main() -> None:
         valid = np.isfinite(eps_s) & np.isfinite(eps_v)
         rho = float(np.corrcoef(eps_s[valid], eps_v[valid])[0, 1])
     else:
-        eps_v = np.full_like(eps_s, np.nan)
         rho = float("nan")
 
     v0_latest = float(est["v_proxy"].iloc[-1])
@@ -269,6 +284,8 @@ def main() -> None:
     print(f"Variance half-life      : {half_life_trading_days:.2f} trading days")
     print(f"Feller ratio            : {feller_ratio:.6f}")
     print(f"Feller satisfied        : {feller_satisfied}")
+    print(f"Raw kappa start         : {opt_diag['initial_kappa_raw']:.6f}")
+    print(f"Used kappa start        : {opt_diag['initial_kappa_used']:.6f}")
     print(f"Parameters              : {params_path}")
     print(f"Variance proxy          : {proxy_path}")
     print(f"Figure                  : {figure_path}")
