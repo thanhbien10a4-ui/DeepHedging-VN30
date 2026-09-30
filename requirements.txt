@@ -1,0 +1,16 @@
+# Core numerical/data stack
+numpy
+pandas
+scipy
+scikit-learn
+
+# Visualization / notebooks
+matplotlib
+jupyter
+
+# Experiment configuration
+PyYAML
+
+# Deep-learning framework will be pinned after the official project
+# environment is finalized. The legacy Deep Hedging repo has been run
+# in a separate environment using TensorFlow 2.12.0.

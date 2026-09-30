@@ -1,0 +1,7 @@
+model: deep_hedging_lstm
+hidden_size: 128
+learning_rate: 0.0001
+risk_measure:
+  name: CVaR
+  alpha: 0.05
+status: initial_candidate

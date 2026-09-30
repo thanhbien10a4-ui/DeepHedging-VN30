@@ -1,0 +1,10 @@
+project: DeepHedging-VN30
+frequency: 1D
+assets:
+  spot: VN30
+  futures: VN30F1M
+baseline:
+  rebalance: daily
+  methods:
+    - delta_hedging
+    - minimum_variance_hedge

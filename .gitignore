@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets / local configuration
+.env
+.env.*
+*.key
+*.pem
+
+# Model checkpoints / large generated artifacts
+checkpoints/
+models/
+*.h5
+*.keras
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.joblib
+
+# Generated caches and logs
+cache/
+logs/
+*.log
+
+# Processed/intermediate datasets are ignored by default.
+data/processed/*
+!data/processed/.gitkeep
+
+# Experiment scratch outputs
+experiments/**/runs/
+experiments/**/checkpoints/
