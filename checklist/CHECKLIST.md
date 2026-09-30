@@ -27,7 +27,7 @@
   **Trạng thái:** đã tạo cumulative-performance figure, drawdown figure và các bảng kết quả; chưa viết báo cáo hoàn chỉnh.
 - [ ] Danh mục tài liệu tham khảo tối thiểu 15 tài liệu
 - [x] Đưa cấu trúc mã nguồn tái lập lên GitHub
-- [ ] Hoàn thiện `requirements.txt` với phiên bản môi trường cuối cùng
+- [x] Hoàn thiện `requirements.txt` với phiên bản môi trường cuối cùng
 - [ ] Nêu ứng dụng thực tiễn cho nhà đầu tư sử dụng VN30 futures
 
 ## Danh sách mô hình dự kiến
