@@ -27,10 +27,10 @@ official_service_fees:
 personal_income_tax:
   tax_rate: 0.001
   formula: tax = futures_execution_price * contract_multiplier * traded_contracts * initial_margin_rate / 2 * tax_rate
-  initial_margin_rate_assumption: 1.0
-  assumption_label: project_simplification_1_to_1_margin
+  initial_margin_rate_assumption: 0.5
+  assumption_label: project_simplification_1_to_2_margin
   apply_to_open_rebalance_close_and_roll_trades: true
-  warning: The 100% initial-margin rate is a project assumption requested by the user, not a historical VN30F1M margin schedule.
+  warning: The 50% initial-margin rate is a project assumption (1 unit of margin supports 2 units of futures notional), not a historical VN30F1M margin schedule.
 
 execution_model:
   hedge_ratio_interpretation: desired_futures_notional_divided_by_current_spot_portfolio_notional
@@ -52,7 +52,7 @@ known_limitations:
   - VN30F1M is a continuous front-month series and does not contain explicit contract IDs.
   - Exact historical roll execution price spread cannot be reconstructed from the daily continuous file; roll is represented as a calendar cost proxy.
   - The 10bn VND amount is treated as the spot portfolio exposure, not a strict total cash constraint including futures margin.
-  - The 1:1 margin ratio is a project assumption and materially increases the PIT tax base relative to historical exchange margin rates.
+  - The 1:2 margin ratio (50%) is a project assumption, not the historical exchange margin schedule.
   - Margin-asset management fees are account-level monthly charges and are not allocated to individual hedge trades in the core simulator.
   - Daily OHLC data cannot model intraday margin calls, intraday slippage, or limit-order execution.
 
