@@ -8,11 +8,11 @@ Project assumptions frozen in configs/vn30f1m_market_friction.yaml
 -----------------------------------------------------------------
 - VN30 spot portfolio initial notional: 10,000,000,000 VND
 - Futures contract multiplier: 100,000 VND/index point
-- Initial margin ratio assumption: 1.0 (100%, project simplification)
+- Initial margin ratio assumption: 0.5 (50%, project simplification; 1:2 margin)
 - Integer futures contracts, nearest-integer half-up rounding
 - Broker commission: 3,000 VND per matched contract
 - HNX/VSDC service fees from config
-- PIT formula uses the project 100% margin assumption
+- PIT formula uses the project 50% margin assumption
 - Default slippage: 1 tick = 0.1 index point
 - Calendar expiry roll proxy: close old + open next contract
 - Daily mark-to-market futures PnL
@@ -149,7 +149,6 @@ def strategy_contract_targets(
     initial_portfolio_vnd: float,
     multiplier: float,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    # Decision t uses S_t, F_t and h_t for the next interval.
     spot_now = spot_path[:-1]
     fut_now = fut_path[:-1]
     current_portfolio = initial_portfolio_vnd * spot_now / spot_path[0]
@@ -185,21 +184,16 @@ def simulate_episode(
         h, spot_path, fut_path, initial_portfolio, multiplier
     )
 
-    # Long VN30 portfolio economic PnL.
     spot_units = initial_portfolio / spot_path[0]
     spot_daily_pnl = spot_units * np.diff(spot_path)
-
-    # Short futures daily mark-to-market PnL.
     fut_daily_pnl = -n.astype(np.float64) * multiplier * np.diff(fut_path)
     gross_daily_pnl = spot_daily_pnl + fut_daily_pnl
 
-    # Base matched quantity: open, rebalance, close.
     trade_qty = np.zeros(EPISODE_STEPS + 1, dtype=np.float64)
     trade_qty[0] = float(n[0])
     trade_qty[1:EPISODE_STEPS] = np.abs(np.diff(n)).astype(np.float64)
     trade_qty[-1] = float(n[-1])
 
-    # Calendar roll proxy: close old and open next, no change in net target contracts.
     roll_qty = np.zeros_like(trade_qty)
     ndates = pd.DatetimeIndex(dates).normalize()
     for t in range(EPISODE_STEPS):
@@ -218,7 +212,6 @@ def simulate_episode(
     pre_hold_mask = hold_dates < krx
     vsdc_position = float(np.sum(n[pre_hold_mask].astype(np.float64)) * vsdc_pre)
 
-    # Execution-price proxy uses observed continuous futures close at trade date.
     execution_prices = fut_path.copy()
     tax = float(
         np.sum(
@@ -463,7 +456,11 @@ def main() -> None:
             f"mean PnL diff={vals['net_mean_pnl_difference_vnd']:+,.0f} VND"
         )
     print()
-    print("IMPORTANT: 100% margin is a project assumption and strongly affects PIT tax.")
+    print(
+        "IMPORTANT: "
+        f"{cfg['personal_income_tax']['initial_margin_rate_assumption']:.0%} margin is a project assumption "
+        "and materially affects PIT tax and margin requirement."
+    )
     print("TEST is already unsealed; do not retune from these results.")
     print(f"Summary : {summary_path}")
     print(f"Episodes: {episode_path}")
