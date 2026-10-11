@@ -1,0 +1,151 @@
+{
+  "status": "POST_FREEZE_GRACEFUL_DEGRADATION_STRESS_ONLY",
+  "model_retuned": false,
+  "real_test_already_unsealed": true,
+  "stress_calibration_source": "fixed factors; TRAIN futures std for idiosyncratic-noise scale",
+  "seed": 20261008,
+  "open_loop_forward_shock_design": true,
+  "policy_actions_recomputed_under_stressed_state": false,
+  "scenario_definitions": [
+    {
+      "name": "baseline",
+      "kind": "baseline"
+    },
+    {
+      "name": "joint_vol_x1p25",
+      "kind": "joint_vol",
+      "factor": 1.25
+    },
+    {
+      "name": "joint_vol_x1p50",
+      "kind": "joint_vol",
+      "factor": 1.5
+    },
+    {
+      "name": "fut_noise_0p5_train_sd",
+      "kind": "fut_noise",
+      "noise_scale": 0.5
+    },
+    {
+      "name": "fut_noise_1p0_train_sd",
+      "kind": "fut_noise",
+      "noise_scale": 1.0
+    },
+    {
+      "name": "downside_x1p50",
+      "kind": "downside",
+      "factor": 1.5
+    },
+    {
+      "name": "combined_stress",
+      "kind": "combined",
+      "vol_factor": 1.25,
+      "noise_scale": 0.5
+    }
+  ],
+  "train_futures_daily_log_return_std": 0.016336495262401614,
+  "scenario_realized_market_stats": {
+    "baseline": {
+      "spot_daily_std": 0.013511653484574454,
+      "fut_daily_std": 0.013970369775153799,
+      "spot_fut_corr": 0.9645684979845093
+    },
+    "joint_vol_x1p25": {
+      "spot_daily_std": 0.016889566855718068,
+      "fut_daily_std": 0.01746296221894225,
+      "spot_fut_corr": 0.9645684979845106
+    },
+    "joint_vol_x1p50": {
+      "spot_daily_std": 0.020267480226861683,
+      "fut_daily_std": 0.020955554662730698,
+      "spot_fut_corr": 0.9645684979845105
+    },
+    "fut_noise_0p5_train_sd": {
+      "spot_daily_std": 0.013511653484574454,
+      "fut_daily_std": 0.016450991827839136,
+      "spot_fut_corr": 0.8488876687317072
+    },
+    "fut_noise_1p0_train_sd": {
+      "spot_daily_std": 0.013511653484574454,
+      "fut_daily_std": 0.021903654015852984,
+      "spot_fut_corr": 0.6599222943052067
+    },
+    "downside_x1p50": {
+      "spot_daily_std": 0.017373533976464548,
+      "fut_daily_std": 0.01794897235976342,
+      "spot_fut_corr": 0.9653055126854997
+    },
+    "combined_stress": {
+      "spot_daily_std": 0.016889566855718068,
+      "fut_daily_std": 0.01955955129109294,
+      "spot_fut_corr": 0.8862109611138854
+    }
+  },
+  "final_model_summary": [
+    {
+      "scenario": "baseline",
+      "final_cvar": 0.009002049232104386,
+      "degradation_vs_final_baseline_fraction": 0.0,
+      "final_cvar_reduction_vs_delta_fraction": 0.07090710498221131,
+      "final_terminal_mean": 0.0022921097916687185,
+      "delta_terminal_mean": -4.870452133676986e-05,
+      "spot_fut_corr": 0.9658628308134267
+    },
+    {
+      "scenario": "joint_vol_x1p25",
+      "final_cvar": 0.011252561540130483,
+      "degradation_vs_final_baseline_fraction": 0.25,
+      "final_cvar_reduction_vs_delta_fraction": 0.0709071049822112,
+      "final_terminal_mean": 0.0028651372395858974,
+      "delta_terminal_mean": -6.088065167096233e-05,
+      "spot_fut_corr": 0.9658628308134272
+    },
+    {
+      "scenario": "joint_vol_x1p50",
+      "final_cvar": 0.013503073848156574,
+      "degradation_vs_final_baseline_fraction": 0.49999999999999933,
+      "final_cvar_reduction_vs_delta_fraction": 0.07090710498221164,
+      "final_terminal_mean": 0.003438164687503078,
+      "delta_terminal_mean": -7.305678200515479e-05,
+      "spot_fut_corr": 0.965862830813427
+    },
+    {
+      "scenario": "fut_noise_0p5_train_sd",
+      "final_cvar": 0.13412988273966941,
+      "degradation_vs_final_baseline_fraction": 13.899927703274093,
+      "final_cvar_reduction_vs_delta_fraction": 0.040178477852683026,
+      "final_terminal_mean": -0.04305983702439527,
+      "delta_terminal_mean": -0.04654038586913953,
+      "spot_fut_corr": 0.8575911645543268
+    },
+    {
+      "scenario": "fut_noise_1p0_train_sd",
+      "final_cvar": 0.27043495877972384,
+      "degradation_vs_final_baseline_fraction": 29.041488532995388,
+      "final_cvar_reduction_vs_delta_fraction": 0.035840048527878254,
+      "final_terminal_mean": -0.08841178384045925,
+      "delta_terminal_mean": -0.09303206721694228,
+      "spot_fut_corr": 0.6724663408601687
+    },
+    {
+      "scenario": "downside_x1p50",
+      "final_cvar": 0.01679264018370401,
+      "degradation_vs_final_baseline_fraction": 0.8654241662904614,
+      "final_cvar_reduction_vs_delta_fraction": -0.4056278140964853,
+      "final_terminal_mean": 0.002583092325121381,
+      "delta_terminal_mean": 0.0037766899408300486,
+      "spot_fut_corr": 0.9662303671878104
+    },
+    {
+      "scenario": "combined_stress",
+      "final_cvar": 0.1339825559785698,
+      "degradation_vs_final_baseline_fraction": 13.883561789547008,
+      "final_cvar_reduction_vs_delta_fraction": 0.041741427602249415,
+      "final_terminal_mean": -0.042486809576478095,
+      "delta_terminal_mean": -0.04655256199947372,
+      "spot_fut_corr": 0.893067140662313
+    }
+  ],
+  "limitation": "This is an open-loop forward-shock stress test: frozen hedge actions come from original causal TEST states. It measures resilience to unexpected future-distribution changes, not full endogenous policy adaptation under a re-simulated stressed state path.",
+  "warning": "Do not retune the model from these TEST stress results."
+}

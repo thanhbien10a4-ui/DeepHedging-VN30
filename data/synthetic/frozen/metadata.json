@@ -1,0 +1,103 @@
+{
+  "dataset_role": "final_frozen_synthetic_for_deep_hedging_training",
+  "seed": 20261004,
+  "n_steps": 60,
+  "split_sizes": {
+    "train": 20000,
+    "validation": 4000,
+    "test": 4000
+  },
+  "real_test_data_used": false,
+  "parameter_provenance": {
+    "heston_structural": "train_only",
+    "basis_structural": "train_only",
+    "simulator_hyperparameters": "validation_tuned_then_frozen"
+  },
+  "initial_state_source": "last observation of real TRAIN split",
+  "initial_state": {
+    "spot": 1005.19,
+    "variance": 0.004736442516326843,
+    "basis": -0.0006864373899462335,
+    "train_date": "2022-12-30"
+  },
+  "heston_train_parameters": {
+    "window": 1,
+    "mu": 0.07185494447658256,
+    "kappa": 88.42190577814841,
+    "theta_unscaled": 0.030998511130868298,
+    "xi_unscaled": 4.100232942308826,
+    "rho_unscaled": -0.2789033060411829
+  },
+  "frozen_config": {
+    "window": 1,
+    "variance_scale": 0.8059521098897088,
+    "basis_sigma_scale": 0.39978624157542547,
+    "xi_scale": 0.4,
+    "rho_scale": 4.0,
+    "rho_effective": -0.95,
+    "substeps": 8
+  },
+  "effective_heston_parameters": {
+    "theta": 0.024983315449362928,
+    "xi": 1.4723909525291157,
+    "rho": -0.95,
+    "substeps_per_trading_day": 8
+  },
+  "effective_basis_parameters": {
+    "c": -0.0006676336518966116,
+    "phi": 0.7637489212282299,
+    "innovation_std_daily": 0.002263728812763023
+  },
+  "known_limitation": {
+    "validation_metric": "spot squared-return ACF(1)",
+    "validation_target": -0.01866068394022039,
+    "frozen_validation_synthetic": 0.14290197318071535,
+    "gate_passed": false,
+    "note": "Standard Heston baseline retains excess volatility clustering. No further validation hyperparameter search is permitted after freezing."
+  },
+  "synthetic_split_summaries": {
+    "train": {
+      "n_paths": 20000,
+      "n_steps": 60,
+      "spot_return_mean_daily": 0.0002449448864045509,
+      "spot_return_std_daily": 0.009780148404005018,
+      "futures_return_mean_daily": 0.00020888381216127393,
+      "futures_return_std_daily": 0.010072708277115677,
+      "spot_futures_return_corr": 0.9709766405625306,
+      "basis_mean": -0.0027012255397214457,
+      "basis_std": 0.003474872788158385,
+      "spot_squared_return_acf1": 0.14894434138233167,
+      "variance_mean": 0.023883184418082237,
+      "variance_zero_fraction": 0.0012327868852459016
+    },
+    "validation": {
+      "n_paths": 4000,
+      "n_steps": 60,
+      "spot_return_mean_daily": 0.00025182564919330947,
+      "spot_return_std_daily": 0.009743282208491284,
+      "futures_return_mean_daily": 0.00021508246312353167,
+      "futures_return_std_daily": 0.010023416110913685,
+      "spot_futures_return_corr": 0.97059782291616,
+      "basis_mean": -0.0027124309057323936,
+      "basis_std": 0.003487132965922443,
+      "spot_squared_return_acf1": 0.1405500449767994,
+      "variance_mean": 0.023846806958317757,
+      "variance_zero_fraction": 0.00119672131147541
+    },
+    "test": {
+      "n_paths": 4000,
+      "n_steps": 60,
+      "spot_return_mean_daily": 0.00019714215546921628,
+      "spot_return_std_daily": 0.009826129891494177,
+      "futures_return_mean_daily": 0.00016338569882145166,
+      "futures_return_std_daily": 0.010123069714918307,
+      "spot_futures_return_corr": 0.9711056397650333,
+      "basis_mean": -0.002722839567256754,
+      "basis_std": 0.0034806536389481975,
+      "spot_squared_return_acf1": 0.1494028341583485,
+      "variance_mean": 0.024058422073721886,
+      "variance_zero_fraction": 0.0011885245901639345
+    }
+  },
+  "warning": "The synthetic test split is a simulator holdout only. It must not be confused with the untouched real 2025-2026 OOS test set."
+}

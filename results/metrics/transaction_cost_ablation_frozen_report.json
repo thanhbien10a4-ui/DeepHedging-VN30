@@ -1,0 +1,153 @@
+{
+  "status": "POST_FREEZE_TRANSACTION_COST_ABLATION_ONLY",
+  "model_retuned": false,
+  "real_test_already_unsealed": true,
+  "scenarios": [
+    {
+      "name": "gross_no_cost",
+      "hnx": false,
+      "vsdc": false,
+      "roll": false,
+      "slip": 0.0
+    },
+    {
+      "name": "hnx_only",
+      "hnx": true,
+      "vsdc": false,
+      "roll": false,
+      "slip": 0.0
+    },
+    {
+      "name": "hnx_plus_vsdc",
+      "hnx": true,
+      "vsdc": true,
+      "roll": false,
+      "slip": 0.0
+    },
+    {
+      "name": "hnx_vsdc_roll",
+      "hnx": true,
+      "vsdc": true,
+      "roll": true,
+      "slip": 0.0
+    },
+    {
+      "name": "full_slip_0p5",
+      "hnx": true,
+      "vsdc": true,
+      "roll": true,
+      "slip": 0.5
+    },
+    {
+      "name": "full_slip_1p0",
+      "hnx": true,
+      "vsdc": true,
+      "roll": true,
+      "slip": 1.0
+    },
+    {
+      "name": "full_slip_2p0",
+      "hnx": true,
+      "vsdc": true,
+      "roll": true,
+      "slip": 2.0
+    },
+    {
+      "name": "full_slip_4p0_liquidity_stress",
+      "hnx": true,
+      "vsdc": true,
+      "roll": true,
+      "slip": 4.0
+    }
+  ],
+  "final_model_vs_delta": {
+    "gross_no_cost": {
+      "final_net_cvar_vnd": 1656803.3942737097,
+      "delta_net_cvar_vnd": 1762736.8421052664,
+      "final_cvar_reduction_vs_delta_fraction": 0.06009600826464745,
+      "final_mean_cost_vnd": 0.0
+    },
+    "hnx_only": {
+      "final_net_cvar_vnd": 1662838.17846838,
+      "delta_net_cvar_vnd": 1768136.8421052664,
+      "final_cvar_reduction_vs_delta_fraction": 0.059553458267127435,
+      "final_mean_cost_vnd": 6034.615503807326
+    },
+    "hnx_plus_vsdc": {
+      "final_net_cvar_vnd": 1680644.1555851419,
+      "delta_net_cvar_vnd": 1774176.3157894767,
+      "final_cvar_reduction_vs_delta_fraction": 0.05271863871247473,
+      "final_mean_cost_vnd": 30607.004224859378
+    },
+    "hnx_vsdc_roll": {
+      "final_net_cvar_vnd": 1709402.1101311669,
+      "delta_net_cvar_vnd": 1802913.1578947396,
+      "final_cvar_reduction_vs_delta_fraction": 0.05186664002872199,
+      "final_mean_cost_vnd": 58306.32869701933
+    },
+    "full_slip_0p5": {
+      "final_net_cvar_vnd": 1749496.354862267,
+      "delta_net_cvar_vnd": 1840281.578947371,
+      "final_cvar_reduction_vs_delta_fraction": 0.04933224628430655,
+      "final_mean_cost_vnd": 97824.56233457134
+    },
+    "full_slip_1p0": {
+      "final_net_cvar_vnd": 1789590.5995933667,
+      "delta_net_cvar_vnd": 1877650.0000000028,
+      "final_cvar_reduction_vs_delta_fraction": 0.046898730011789125,
+      "final_mean_cost_vnd": 137342.79597212333
+    },
+    "full_slip_2p0": {
+      "final_net_cvar_vnd": 1869779.0890555668,
+      "delta_net_cvar_vnd": 1952386.842105266,
+      "final_cvar_reduction_vs_delta_fraction": 0.04231116050783401,
+      "final_mean_cost_vnd": 216379.26324722735
+    },
+    "full_slip_4p0_liquidity_stress": {
+      "final_net_cvar_vnd": 2030156.0679799668,
+      "delta_net_cvar_vnd": 2101860.5263157925,
+      "final_cvar_reduction_vs_delta_fraction": 0.034114755683390396,
+      "final_mean_cost_vnd": 374452.19779743534
+    }
+  },
+  "final_model_cvar_degradation_vs_gross": [
+    {
+      "scenario": "gross_no_cost",
+      "cvar_degradation_vs_gross_fraction": 0.0
+    },
+    {
+      "scenario": "hnx_only",
+      "cvar_degradation_vs_gross_fraction": 0.0036424262622394288
+    },
+    {
+      "scenario": "hnx_plus_vsdc",
+      "cvar_degradation_vs_gross_fraction": 0.014389613996344641
+    },
+    {
+      "scenario": "hnx_vsdc_roll",
+      "cvar_degradation_vs_gross_fraction": 0.031747107737254865
+    },
+    {
+      "scenario": "full_slip_0p5",
+      "cvar_degradation_vs_gross_fraction": 0.05594686787154424
+    },
+    {
+      "scenario": "full_slip_1p0",
+      "cvar_degradation_vs_gross_fraction": 0.08014662800583339
+    },
+    {
+      "scenario": "full_slip_2p0",
+      "cvar_degradation_vs_gross_fraction": 0.1285461482744119
+    },
+    {
+      "scenario": "full_slip_4p0_liquidity_stress",
+      "cvar_degradation_vs_gross_fraction": 0.22534518881156873
+    }
+  ],
+  "excluded": [
+    "personal income tax",
+    "broker commission",
+    "margin-asset management fee"
+  ],
+  "warning": "The 4-tick liquidity stress is a stress scenario, not an empirical execution-cost estimate. Do not retune the model from these TEST results."
+}

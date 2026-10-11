@@ -1,0 +1,1 @@
+{"review_date": "2026-10-11", "scope": "Artifact consistency review; no independent retraining or checkpoint inference", "checkpoints": {"results/models/lstm_cvar_turnover_best.pt": "8966e5139e0c6287b0ca595df7d5a9a798dba2007e696240c1750921e4c62030", "results/models/lstm_cvar_turnover_real_finetuned_best.pt": "d874517fc381e49521b8b48fdd726be55664440948db811d944d468a44665e00"}}

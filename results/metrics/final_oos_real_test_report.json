@@ -1,0 +1,142 @@
+{
+  "status": "FINAL_REAL_TEST_OPENED_AND_EVALUATED",
+  "test_opened_at_local_runtime": "2026-09-30T10:11:44",
+  "test_period": {
+    "rows": 430,
+    "date_min": "2025-01-02",
+    "date_max": "2026-09-29",
+    "overlapping_60d_episodes": 370
+  },
+  "frozen_model_sha256": "d874517fc381e49521b8b48fdd726be55664440948db811d944d468a44665e00",
+  "pretrained_model_sha256": "8966e5139e0c6287b0ca595df7d5a9a798dba2007e696240c1750921e4c62030",
+  "input_clip_z": 5.0,
+  "tail_fraction": 0.05,
+  "lambda_tc_normalized": 0.001,
+  "official_transaction_cost_model_used": false,
+  "real_train_static_minvar_ratio": 0.7607647337531541,
+  "results": [
+    {
+      "strategy": "unhedged",
+      "gross_daily_std": 0.014110873013293864,
+      "gross_terminal_mean": 0.057830656784401954,
+      "gross_terminal_std": 0.10060695498015636,
+      "gross_terminal_q05": -0.0875386776344385,
+      "gross_cvar_loss_worst_5pct": 0.10180331410026013,
+      "net_terminal_mean_proxy": 0.057830656784401954,
+      "net_terminal_std_proxy": 0.10060695498015636,
+      "net_terminal_q05_proxy": -0.0875386776344385,
+      "net_cvar_loss_worst_5pct_proxy": 0.10180331410026013,
+      "turnover_mean_open_rebalance_close": 0.0,
+      "hedge_ratio_mean": 0.0,
+      "hedge_ratio_std": 0.0,
+      "hedge_q01": 0.0,
+      "hedge_q50": 0.0,
+      "hedge_q99": 0.0
+    },
+    {
+      "strategy": "delta_1to1",
+      "gross_daily_std": 0.00378080832450526,
+      "gross_terminal_mean": -4.870663512544549e-05,
+      "gross_terminal_std": 0.0049088871441219225,
+      "gross_terminal_q05": -0.007714940349796961,
+      "gross_cvar_loss_worst_5pct": 0.009689075312627736,
+      "net_terminal_mean_proxy": -0.002048706635125446,
+      "net_terminal_std_proxy": 0.0049088871441219225,
+      "net_terminal_q05_proxy": -0.009714940349796962,
+      "net_cvar_loss_worst_5pct_proxy": 0.011689075312627736,
+      "turnover_mean_open_rebalance_close": 2.0,
+      "hedge_ratio_mean": 1.0,
+      "hedge_ratio_std": 0.0,
+      "hedge_q01": 1.0,
+      "hedge_q50": 1.0,
+      "hedge_q99": 1.0
+    },
+    {
+      "strategy": "real_train_static_minvar",
+      "gross_daily_std": 0.00444341110566334,
+      "gross_terminal_mean": 0.013798079191300347,
+      "gross_terminal_std": 0.023752066655940544,
+      "gross_terminal_q05": -0.021533203617980157,
+      "gross_cvar_loss_worst_5pct": 0.025739428454972336,
+      "net_terminal_mean_proxy": 0.012276549755188895,
+      "net_terminal_std_proxy": 0.023752066655940544,
+      "net_terminal_q05_proxy": -0.023054733054091607,
+      "net_cvar_loss_worst_5pct_proxy": 0.02726095789108379,
+      "turnover_mean_open_rebalance_close": 1.5215294361114502,
+      "hedge_ratio_mean": 0.7607647180557251,
+      "hedge_ratio_std": 0.0,
+      "hedge_q01": 0.7607647180557251,
+      "hedge_q50": 0.7607647180557251,
+      "hedge_q99": 0.7607647180557251
+    },
+    {
+      "strategy": "causal_rolling60_minvar",
+      "gross_daily_std": 0.0037385446588729505,
+      "gross_terminal_mean": -1.4886224882764804e-05,
+      "gross_terminal_std": 0.00865671638708668,
+      "gross_terminal_q05": -0.014490593298559685,
+      "gross_cvar_loss_worst_5pct": 0.01711857999973739,
+      "net_terminal_mean_proxy": -0.0021524147593982488,
+      "net_terminal_std_proxy": 0.008667814838858819,
+      "net_terminal_q05_proxy": -0.016627930506353875,
+      "net_cvar_loss_worst_5pct_proxy": 0.019281292165921258,
+      "turnover_mean_open_rebalance_close": 2.137528534515484,
+      "hedge_ratio_mean": 0.9205082499792984,
+      "hedge_ratio_std": 0.04396423733097254,
+      "hedge_q01": 0.840192973613739,
+      "hedge_q50": 0.9244534969329834,
+      "hedge_q99": 1.0034215450286865
+    },
+    {
+      "strategy": "synthetic_pretrained_lstm",
+      "gross_daily_std": 0.003755645347366509,
+      "gross_terminal_mean": 0.0008974931931088189,
+      "gross_terminal_std": 0.0047588031956230575,
+      "gross_terminal_q05": -0.006648707473471823,
+      "gross_cvar_loss_worst_5pct": 0.008715538032900148,
+      "net_terminal_mean_proxy": -0.0013346673838275421,
+      "net_terminal_std_proxy": 0.004749660662310081,
+      "net_terminal_q05_proxy": -0.00887808989901847,
+      "net_cvar_loss_worst_5pct_proxy": 0.010943716113659699,
+      "turnover_mean_open_rebalance_close": 2.232160576936361,
+      "hedge_ratio_mean": 0.9953472359142862,
+      "hedge_ratio_std": 0.014611862926385917,
+      "hedge_q01": 0.9464560377597809,
+      "hedge_q50": 0.9968679547309875,
+      "hedge_q99": 1.024747792482376
+    },
+    {
+      "strategy": "real_finetuned_lstm",
+      "gross_daily_std": 0.0036943609875046703,
+      "gross_terminal_mean": 0.002292107692292307,
+      "gross_terminal_std": 0.006393264727922248,
+      "gross_terminal_q05": -0.006688068040221696,
+      "gross_cvar_loss_worst_5pct": 0.00900205142521276,
+      "net_terminal_mean_proxy": 5.706491310440851e-05,
+      "net_terminal_std_proxy": 0.006387505334909562,
+      "net_terminal_q05_proxy": -0.00892366733626957,
+      "net_cvar_loss_worst_5pct_proxy": 0.01124304542690247,
+      "turnover_mean_open_rebalance_close": 2.235042779187898,
+      "hedge_ratio_mean": 0.971850688154096,
+      "hedge_ratio_std": 0.020765650057055916,
+      "hedge_q01": 0.9093905431032181,
+      "hedge_q50": 0.974202573299408,
+      "hedge_q99": 1.0131250357627868
+    }
+  ],
+  "final_model_improvement_vs_baselines": {
+    "delta_1to1": {
+      "gross_cvar_reduction_fraction": 0.07090706442539274,
+      "net_proxy_cvar_reduction_fraction": 0.03815784172794401
+    },
+    "real_train_static_minvar": {
+      "gross_cvar_reduction_fraction": 0.6502621866308866,
+      "net_proxy_cvar_reduction_fraction": 0.587577022354753
+    },
+    "causal_rolling60_minvar": {
+      "gross_cvar_reduction_fraction": 0.4741356219177725,
+      "net_proxy_cvar_reduction_fraction": 0.4168935707133776
+    }
+  },
+  "methodological_warning": "Do not tune any model choice based on this real TEST result. Overlapping episodes are dependent. The normalized turnover penalty is not an official VN30F1M fee model."
+}

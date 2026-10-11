@@ -1,0 +1,34 @@
+{
+  "python": {
+    "version": "3.13.4",
+    "implementation": "CPython",
+    "executable": "C:\\Users\\Hi Windows 11 Home\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+  },
+  "platform": {
+    "system": "Windows",
+    "release": "11",
+    "version": "10.0.26200",
+    "machine": "AMD64",
+    "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD"
+  },
+  "packages": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.8.0",
+    "statsmodels": "0.14.6",
+    "matplotlib": "3.10.3",
+    "jupyter": null,
+    "PyYAML": "6.0.3",
+    "torch": "2.13.0"
+  },
+  "torch_runtime": {
+    "version": "2.13.0+cpu",
+    "cuda_available": false,
+    "cuda_version": null,
+    "cudnn_version": null,
+    "num_threads": 8,
+    "num_interop_threads": 8,
+    "device_count": 0
+  }
+}

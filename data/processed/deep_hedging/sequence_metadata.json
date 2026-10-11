@@ -1,0 +1,69 @@
+{
+  "dataset_role": "causal_sequences_for_deep_hedging",
+  "source": "data/synthetic/frozen/*.npz from step 14",
+  "feature_names": [
+    "lag_spot_log_return",
+    "lag_fut_log_return",
+    "basis_t",
+    "sqrt_variance_t",
+    "log_spot_relative_t",
+    "log_futures_relative_t",
+    "time_remaining"
+  ],
+  "n_features": 7,
+  "causal_timing": "features at t use information available at t only; hedge action h_t is applied to forward interval t->t+1",
+  "hedge_return_definition": "spot_forward_log_return - h_t * fut_forward_log_return",
+  "scaler_policy": "mean/std fitted on synthetic TRAIN only",
+  "scaler_mean": {
+    "lag_spot_log_return": 0.00024179518675092681,
+    "lag_fut_log_return": 0.00020548300996500016,
+    "basis_t": -0.0026653310040875436,
+    "sqrt_variance_t": 0.14452407055129735,
+    "log_spot_relative_t": 0.0073601180643957835,
+    "log_futures_relative_t": 0.005371903748368483,
+    "time_remaining": 0.5083333339852592
+  },
+  "scaler_std": {
+    "lag_spot_log_return": 0.009694522561962397,
+    "lag_fut_log_return": 0.00998443780314239,
+    "basis_t": 0.0034547962347581955,
+    "sqrt_variance_t": 0.054552035716735045,
+    "log_spot_relative_t": 0.05313201890635896,
+    "log_futures_relative_t": 0.05323916775996641,
+    "time_remaining": 0.28863503663073026
+  },
+  "splits": {
+    "train": {
+      "n_paths": 20000,
+      "n_steps": 60,
+      "n_features": 7,
+      "scaled_feature_mean_abs_max": 2.7318795522054035e-09,
+      "scaled_feature_std_min": 0.9999999944359548,
+      "scaled_feature_std_max": 1.0000000009638887,
+      "spot_forward_std": 0.009780149906873703,
+      "fut_forward_std": 0.010072709992527962
+    },
+    "validation": {
+      "n_paths": 4000,
+      "n_steps": 60,
+      "n_features": 7,
+      "scaled_feature_mean_abs_max": 0.016253599352537448,
+      "scaled_feature_std_min": 0.9829900983177846,
+      "scaled_feature_std_max": 1.003762585218523,
+      "spot_forward_std": 0.0097432816401124,
+      "fut_forward_std": 0.010023416019976139
+    },
+    "test": {
+      "n_paths": 4000,
+      "n_steps": 60,
+      "n_features": 7,
+      "scaled_feature_mean_abs_max": 0.03147856560101635,
+      "scaled_feature_std_min": 0.9988863933441389,
+      "scaled_feature_std_max": 1.0053991109013287,
+      "spot_forward_std": 0.00982612930238247,
+      "fut_forward_std": 0.010123069398105145
+    }
+  },
+  "real_market_test_used": false,
+  "note": "Previous hedge h_{t-1} is intentionally not precomputed as an exogenous feature. A recurrent policy may feed its own previous action internally when transaction-cost penalties are introduced."
+}

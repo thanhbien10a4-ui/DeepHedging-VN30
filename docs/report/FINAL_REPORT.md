@@ -1,6 +1,6 @@
 # DeepHedging-VN30 — Báo cáo phương pháp và bàn giao nghiên cứu
 
-Ngày đóng gói mã nguồn và tài liệu: 11/10/2026. Đây là báo cáo phương pháp hoàn chỉnh kèm quy trình bổ sung kết quả, không phải chứng nhận đã kiểm chứng toàn bộ thí nghiệm. Phần kết quả phải đọc cùng `results/report/RESULTS_REPORT.md` sinh từ artifacts trên máy chạy.
+Ngày đóng gói mã nguồn và tài liệu: 11/10/2026. Đã đối chiếu các artifacts (tệp kết quả), lịch sử huấn luyện và bảng đánh giá do người thực hiện cung cấp ngày 11/10/2026. Đây là rà soát bằng chứng và tính nhất quán; chưa huấn luyện lại độc lập trong môi trường sạch.
 
 ## 1. Mục tiêu và câu hỏi nghiên cứu
 
@@ -48,9 +48,45 @@ Regime dùng TRAIN terciles của trailing return, sideways là nhóm giữa the
 
 ## 8. Kết quả hiện có và điều kiện kết luận
 
-Methodology trước đóng gói báo cáo final LSTM CVaR khoảng 121,9 triệu VND, delta 134,3 triệu, giảm khoảng 9,22%; downside stress có CVaR tệ hơn delta khoảng 40,56%. Đây là số liệu lịch sử do dự án báo cáo, chưa được xác nhận độc lập ở lần đóng gói này. Không dùng chúng như bảng nghiệm thu.
+### Huấn luyện và chọn checkpoint
 
-Chạy `python scripts/project.py report` để tạo báo cáo đọc trực tiếp CSV/JSON/figures hiện có. Nếu thiếu file, báo cáo hiện rõ khoảng trống. Chỉ chốt kết luận sau đối chiếu training histories, checkpoint provenance, OOS và stress. Không thay mô hình cuối cùng vì comparator có metric TEST đẹp hơn.
+LSTM variance chạy 17 epochs, chọn epoch 11; LSTM CVaR chạy 24 epochs, chọn epoch 16 với validation CVaR scaled = 0.664164685. Fine-tuning (tinh chỉnh) chạy 8 epochs sau epoch 0, chọn epoch 2: validation CVaR scaled giảm từ 1.119922819 xuống 1.098733029, tương đương 1.892%. Giá trị scaled dùng trong lịch sử không phải số tiền VND. Các minimum được đối chiếu với CSV; đây là cải thiện validation và early stopping (dừng sớm), không chứng minh hội tụ toàn cục.
+
+Thời gian do reports ghi nhận trên CPU: variance 87.75 giây, CVaR 76.59 giây, fine-tuning 1.78 giây. Đây là thời gian vòng huấn luyện ghi trong từng report, không phải thời gian toàn pipeline. Quy mô này không cần A100; chưa phải thí nghiệm lớn tương đương mọi cấu hình trong bài báo gốc.
+
+![CVaR training](../../results/figures/lstm_cvar_turnover_training_curve.png)
+![Fine-tuning](../../results/figures/real_finetune_cvar_training_curve.png)
+
+### OOS và simulator có chi phí
+
+Bảng sau lấy từ `results/tables/full_market_simulator_frozen_summary.csv`: exposure 10 tỷ VND, 370 episodes chồng lấn, hợp đồng nguyên, phí/thuế/slippage theo config dự án. CVaR là trung bình tổn thất đuôi xấu nhất 5%; thấp hơn biểu thị giảm tail risk (rủi ro đuôi).
+
+| Chiến lược | Net CVaR 5% (triệu VND) | PnL ròng trung bình (triệu VND) | Chi phí trung bình (triệu VND) |
+|---|---:|---:|---:|
+| unhedged | 967.611 | 649.975 | 0.000 |
+| delta_1to1 | 134.277 | -30.296 | 30.640 |
+| real_train_static_minvar | 267.835 | 132.126 | 23.313 |
+| causal_rolling60_minvar | 192.937 | -23.455 | 28.902 |
+| synthetic_pretrained_lstm | 119.439 | -20.427 | 30.652 |
+| real_finetuned_lstm | 121.903 | -3.018 | 30.133 |
+
+Final fine-tuned LSTM giảm net CVaR **9.216%** so với delta 1:1, **54.486%** so với static min-var và **36.817%** so với rolling min-var. Trong normalized turnover-cost evaluation (đánh giá với chi phí turnover chuẩn hóa), mức giảm so với delta là **3.816%**; không trộn chỉ tiêu này với simulator VND.
+
+Pretrained LSTM có net CVaR 119.439 triệu, thấp hơn final 121.903 triệu. Fine-tuning cải thiện VALIDATION nhưng không cải thiện mọi chỉ tiêu TEST; giữ checkpoint đã chọn trước TEST. PnL ròng trung bình final là **âm 3.018 triệu/episode**: mục tiêu chính là giảm rủi ro, chưa có bằng chứng tạo lợi nhuận ròng dương. Margin lớn nhất final khoảng **6.288 tỷ VND**, bổ sung vào nhu cầu vốn ngoài spot exposure.
+
+![Net CVaR simulator](../../results/figures/full_market_simulator_frozen_cvar.png)
+
+### Regime, chi phí và stress
+
+Regime có 37 bear, 175 sideways, 158 bull episodes. Bảng regime là gross PnL theo đơn vị riêng của bước 25, không lấy trực tiếp so với net VND của simulator 10 tỷ. Cost ablation đã có bảng kết quả; slippage stress chỉ là proxy (biến đại diện) thanh khoản.
+
+Downside x1.5 có final CVaR 0.016792640 so với delta khoảng 0.011946; final **tệ hơn delta 40.563%**. Futures noise 0.5 và 1.0 TRAIN standard deviation làm CVaR tăng khoảng 13.90 và 29.04 lần phần tăng tương đối so với baseline. Kết quả không hỗ trợ tuyên bố robust (bền vững) trong mọi trạng thái. Stress giữ nguyên actions từ đường gốc, không phải closed-loop policy response (phản ứng chính sách vòng kín).
+
+![Stress](../../results/figures/graceful_degradation_frozen.png)
+![Cumulative performance](../../results/figures/frozen_oos_mean_cumulative_performance.png)
+![Drawdown](../../results/figures/frozen_oos_drawdown_distribution.png)
+
+Các biểu đồ cumulative/drawdown là mô tả trong episode chồng lấn; chưa phải tài sản tích lũy của giao dịch liên tục. Kết luận được hỗ trợ: mô hình giảm CVaR trên mẫu OOS và cấu hình đánh giá này so với các baseline truyền thống; chưa xác nhận ý nghĩa thống kê, hiệu quả live hoặc ưu thế trên mọi stress.
 
 ## 9. Integrity và giới hạn nghiên cứu
 
