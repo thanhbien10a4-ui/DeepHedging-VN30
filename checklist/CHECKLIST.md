@@ -43,15 +43,15 @@ Cập nhật sau rà soát GitHub ngày 10/10/2026.
 
 ## 4. Báo cáo và ứng dụng
 - [ ] Báo cáo đầy đủ, có biểu đồ hiệu suất tích lũy  
-  **Chưa hoàn thành:** `docs/report/` chưa có báo cáo đầy đủ. Có code bước 28 sinh cumulative/drawdown figures nhưng figures chưa có trên GitHub. Cumulative curve là mean within-episode 60-day path, không phải stitched chronological wealth curve.
+  **Hoàn thành phần phương pháp, chờ kết quả nghiệm thu:** đã có `docs/report/FINAL_REPORT.md`, tài liệu ứng dụng và công cụ tạo `results/report/RESULTS_REPORT.md`/HTML từ artifacts. Báo cáo kết quả thực nghiệm và figures chưa có trên GitHub; chỉ đóng mục này sau khi đối chiếu đầu ra. Cumulative curve là mean within-episode, không phải wealth curve liên tục.
 - [x] Danh mục tài liệu tham khảo tối thiểu 15 tài liệu  
-  **Bằng chứng:** `docs/literature/REFERENCES.md` có 22 mục đánh số. Phần mở đầu file còn ghi 20, cần đồng bộ; tick xác nhận số lượng danh mục, không xác nhận đã kiểm tra mọi DOI/link hoặc đã trích dẫn đầy đủ trong báo cáo.
+  **Bằng chứng:** `docs/literature/REFERENCES.md` có 22 mục đánh số. Phần mở đầu đã đồng bộ 22 nguồn; tick xác nhận số lượng danh mục, không xác nhận đã kiểm tra mọi DOI/link hoặc đã trích dẫn đầy đủ trong báo cáo.
 - [x] Đưa cấu trúc mã nguồn tái lập lên GitHub  
-  **Phạm vi:** raw data, source pipeline, configs và methodology đã có trên GitHub. Chưa kiểm chứng clean-environment reproduction; README còn mô tả trạng thái ban đầu và thiếu hướng dẫn chạy toàn pipeline. Cần cập nhật hướng dẫn và bộ kết quả tham chiếu để xác nhận khả năng tái lập.
+  **Phạm vi:** raw data, source pipeline, configs và methodology đã có trên GitHub. Chưa kiểm chứng clean-environment reproduction; README và `docs/REPRODUCIBILITY.md` đã có hướng dẫn; `scripts/project.py` có audit/report/package/frozen evaluation. Còn cần kết quả tham chiếu và clean-environment reproduction để xác nhận tái lập.
 - [x] Hoàn thiện `requirements.txt` với phiên bản môi trường cuối cùng  
   **Bằng chứng:** dependencies được pin và môi trường được ghi tại `docs/methodology/ENVIRONMENT.md`; có bước 29 capture environment. Chưa xác nhận cài đặt sạch và chạy lại thành công; `environment_snapshot.json` chưa có trên GitHub.
-- [ ] Nêu ứng dụng thực tiễn cho nhà đầu tư sử dụng VN30 futures  
-  **Chưa hoàn thành:** cần phần ứng dụng cụ thể, điều kiện sử dụng, quy trình hedge/rebalance và giới hạn về vốn, margin, rollover, execution cùng rủi ro ngoài mô hình.
+- [x] Nêu ứng dụng thực tiễn cho nhà đầu tư sử dụng VN30 futures  
+  **Bằng chứng:** `docs/report/PRACTICAL_APPLICATION.md` trình bày đối tượng, quy trình paper trading, sizing, margin, rebalance/roll và điều kiện trước live deployment. Tick xác nhận phần trình bày ứng dụng, không phải đã vận hành giao dịch thật.
 
 ## Danh sách mô hình
 | Mô hình | Vai trò | Trạng thái xác nhận trên GitHub |
@@ -77,3 +77,8 @@ Cập nhật sau rà soát GitHub ngày 10/10/2026.
 - 370 overlapping 60-day episodes không phải 370 quan sát độc lập; chưa có cơ sở suy ra xác suất model vượt baseline từ số episode này.
 - Methodology ghi exploratory contamination caveat trước khi split policy được khóa; không tuyên bố TEST hoàn toàn pristine.
 - Methodology và limitations: `docs/methodology/METHODOLOGY_AND_LIMITATIONS.md`.
+
+## Bàn giao ngày 11/10/2026
+- Đã bổ sung report phương pháp, ứng dụng, hướng dẫn pipeline, prompt nghiệm thu Antigravity, audit/report/package runner và test công cụ bàn giao.
+- Test công cụ không thay thế convergence/inference/OOS verification; không tự đóng 7 mục thực nghiệm vì thiếu artifacts.
+- Không thay đổi mô hình, hyperparameters hoặc TEST selection.

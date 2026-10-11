@@ -1,6 +1,6 @@
 # Tài liệu tham khảo cho đồ án Deep Hedging VN30
 
-Danh mục này ưu tiên các nguồn nền tảng về Deep Hedging, stochastic volatility, CVaR, hedge-ratio estimation, volatility estimation và các nguồn chính thức/đặc thù của thị trường phái sinh Việt Nam. Danh mục hiện có **20 nguồn**, vượt yêu cầu tối thiểu 15 tài liệu.
+Danh mục này ưu tiên các nguồn nền tảng về Deep Hedging, stochastic volatility, CVaR, hedge-ratio estimation, volatility estimation và các nguồn chính thức/đặc thù của thị trường phái sinh Việt Nam. Danh mục hiện có **22 nguồn**, vượt yêu cầu tối thiểu 15 tài liệu.
 
 ## A. Deep Hedging, deep learning và risk measures
 

@@ -1,80 +1,40 @@
-# Deep Hedging for VN30 Futures
+# DeepHedging-VN30
 
-Đồ án nghiên cứu **Deep Hedging phòng hộ rủi ro trên thị trường chứng khoán Việt Nam**, sử dụng VN30 spot và hợp đồng tương lai VN30F1M.
+Ứng dụng Deep Learning (học sâu) cho phòng hộ danh mục tương đương VN30 bằng short VN30F1M. Heston+basis synthetic pretraining, policy LSTM hidden=128, 7 state variables, fine-tune real TRAIN. Không phải tái lập nguyên bài toán payoff quyền chọn gốc.
 
-## Trạng thái hiện tại
+## Trạng thái
+Source pipeline 01–30, baselines, simulator integer-contract, báo cáo phương pháp và ứng dụng đã có. Metrics/checkpoints chưa có trên GitHub ở lần đóng gói 11/10/2026; convergence và hiệu quả thực nghiệm còn chờ kiểm chứng. GRU chưa triển khai. Xem [checklist](checklist/CHECKLIST.md).
 
-Repository được khởi tạo từ hai bộ dữ liệu chính và checklist đồ án.
+## Cài đặt môi trường ảo
+Requirements pin môi trường Windows CPU được dự án báo cáo; chưa chứng nhận cài sạch thành công. GPU cần lock riêng, không tự upgrade để thay đổi kết quả freeze.
 
-| Dataset | Khung thời gian | Số dòng | Từ ngày | Đến ngày | Missing | Duplicate date |
-|---|---:|---:|---|---|---:|---:|
-| VN30 spot | 1D | 2,279 | 2017-08-10 | 2026-09-29 | 0 | 0 |
-| VN30F1M futures | 1D | 2,281 | 2017-08-10 | 2026-09-29 | 0 | 0 |
-
-**Lưu ý dữ liệu:** VN30F1M hiện có thêm 2 ngày `2018-01-23` và `2018-01-24` mà VN30 spot không có. Cần xử lý việc đồng bộ lịch giao dịch trong bước preprocessing, không tự động xóa dữ liệu gốc.
-
-## Mục tiêu đồ án
-
-1. Thu thập và kiểm tra dữ liệu VN30 spot + VN30F1M futures giai đoạn 2017–2026.
-2. Tiền xử lý: log-return, rolling windows, feature engineering và đồng bộ chuỗi thời gian.
-3. Xây dựng stock market simulator có chi phí giao dịch và các ràng buộc thị trường Việt Nam phù hợp với bài toán.
-4. Calibrate mô hình Heston trên dữ liệu VN30.
-5. Xây dựng baseline hedging truyền thống.
-6. Xây dựng Deep Hedging với RNN/LSTM và các biến thể.
-7. Huấn luyện trên synthetic data, sau đó fine-tune/evaluate trên dữ liệu thực tế.
-8. So sánh PnL, CVaR, Sharpe, Max Drawdown và transaction cost.
-9. Phân tích theo market regime, ablation study và graceful degradation.
-10. Bảo đảm mã nguồn và thí nghiệm có thể tái lập.
-
-## Baseline và mô hình dự kiến
-
-- Delta hedging
-- Minimum-variance hedge ratio
-- Deep Hedging LSTM
-- Deep Hedging GRU
-- Deep Hedging + transaction-cost penalty
-
-## Cấu trúc repository
-
-```text
-DeepHedging-VN30/
-├── data/
-│   ├── raw/                  # Dữ liệu gốc, không sửa trực tiếp
-│   └── processed/            # Dữ liệu sinh ra sau preprocessing
-├── checklist/                # Checklist yêu cầu của giảng viên
-├── notebooks/                # Notebook khám phá, demo và thí nghiệm
-├── src/
-│   ├── data/
-│   ├── preprocessing/
-│   ├── simulator/
-│   ├── models/
-│   ├── hedging/
-│   ├── evaluation/
-│   └── utils/
-├── configs/                  # Hyperparameters / experiment configs
-├── experiments/              # Lịch sử thí nghiệm
-├── results/
-│   ├── figures/
-│   ├── tables/
-│   └── metrics/
-├── docs/
-│   ├── methodology/
-│   ├── literature/
-│   └── report/
-└── tests/
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
-## Quy tắc quản lý dữ liệu
+## Kiểm tra và đóng gói đầu ra hiện có
+```powershell
+python scripts/project.py audit
+python scripts/project.py report
+python scripts/project.py package --include-models
+```
+Audit exit 1 là thiếu/lỗi bằng chứng; exit 0 chỉ xác nhận artifact checks và vẫn cần người rà soát. Báo cáo Markdown/HTML ở results/report, ZIP+SHA-256 manifest ở dist. Default package không chứa model, raw CSV hay synthetic arrays; --include-models thêm checkpoint. --allow-incomplete chỉ tạo diagnostic bundle, không phải nghiệm thu.
 
-- `data/raw/` là **immutable**: không sửa trực tiếp file nguồn.
-- Mọi bước làm sạch/chuyển đổi phải được thực hiện bằng code và ghi kết quả vào `data/processed/`.
-- Không commit `.venv`, cache, checkpoint lớn hoặc dữ liệu tạm.
-- Mỗi thí nghiệm quan trọng phải lưu config và metrics để có thể tái lập.
+## Đánh giá model đã freeze
+```powershell
+python scripts/project.py evaluate
+```
+Chạy 24–28, 30, capture environment 29; không train/tune/chạy lại 23. Yêu cầu checkpoint, splits, final TEST sequences có sẵn; sao lưu output trước chạy. Kiểm tra hashes để phát hiện đầu vào bị thay đổi.
 
-## Checklist chính
+## Tài liệu
+- [Pipeline và tái lập](docs/REPRODUCIBILITY.md)
+- [Báo cáo phương pháp](docs/report/FINAL_REPORT.md)
+- [Ứng dụng thực tiễn](docs/report/PRACTICAL_APPLICATION.md)
+- [Antigravity nghiệm thu](docs/ANTIGRAVITY_ACCEPTANCE.md)
+- [Methodology/limitations](docs/methodology/METHODOLOGY_AND_LIMITATIONS.md)
+- [22 nguồn tham khảo](docs/literature/REFERENCES.md)
 
-Chi tiết đầy đủ xem tại [`checklist/CHECKLIST.md`](checklist/CHECKLIST.md) và file CSV gốc trong cùng thư mục.
-
-## Reproducibility
-
-Môi trường sẽ được khóa dần trong quá trình triển khai. `requirements.txt` hiện là bộ dependency nền tảng; phiên bản deep-learning framework cần được chốt theo môi trường chạy chính thức của đồ án trước khi đóng băng phiên bản cuối.
+## Giới hạn
+Continuous futures, roll-calendar proxy, margin giả định 50%, không intraday fills/margin call/hard cash constraint. Turnover penalty không phải full official cost. Episode chồng lấn không độc lập; cumulative curve là mean within-episode. TEST đã mở và có exploratory contamination caveat; không retune theo TEST. Historical fee config không phải biểu phí live hiện hành. Tái lập từ đầu ở thư mục riêng để không ghi đè kết quả cũ.

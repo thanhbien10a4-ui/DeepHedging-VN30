@@ -54,3 +54,7 @@ data/synthetic/*
 # Experiment scratch outputs
 experiments/**/runs/
 experiments/**/checkpoints/
+
+# Generated handoff bundles and evidence viewer
+/dist/
+/results/report/
