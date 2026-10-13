@@ -3,7 +3,7 @@
 Ứng dụng Deep Learning (học sâu) cho phòng hộ danh mục tương đương VN30 bằng short VN30F1M. Heston+basis synthetic pretraining, policy LSTM hidden=128, 7 state variables, fine-tune real TRAIN. Không phải tái lập nguyên bài toán payoff quyền chọn gốc.
 
 ## Trạng thái
-Source pipeline 01–30, baselines, simulator integer-contract, báo cáo phương pháp và ứng dụng đã có. Metrics/checkpoints chưa có trên GitHub ở lần đóng gói 11/10/2026; convergence và hiệu quả thực nghiệm còn chờ kiểm chứng. GRU chưa triển khai. Xem [checklist](checklist/CHECKLIST.md).
+Source pipeline 01–30, baselines, simulator integer-contract, báo cáo phương pháp và ứng dụng đã có. Metrics, CSV, biểu đồ và báo cáo kết quả đã có trên GitHub; checkpoint được xác nhận qua checksum nhưng không lưu trực tiếp trong repo. Các kết quả chưa được tái chạy độc lập trong môi trường sạch; GRU chưa triển khai. Xem [checklist](checklist/CHECKLIST.md).
 
 ## Cài đặt môi trường ảo
 Requirements pin môi trường Windows CPU được dự án báo cáo; chưa chứng nhận cài sạch thành công. GPU cần lock riêng, không tự upgrade để thay đổi kết quả freeze.
