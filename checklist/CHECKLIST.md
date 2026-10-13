@@ -1,6 +1,6 @@
 # Checklist đồ án Deep Hedging
 
-Cập nhật sau đối chiếu artifacts ngày 11/10/2026. Các ô hoàn thành thực nghiệm xác nhận đã chạy và có bằng chứng; không xác nhận tái lập độc lập hoặc ưu thế thống kê.
+Cập nhật sau đối chiếu artifacts ngày 13/10/2026. Các ô hoàn thành thực nghiệm xác nhận đã chạy và có bằng chứng; không xác nhận tái lập độc lập hoặc ưu thế thống kê.
 
 ## Quy ước trạng thái
 - `[x]`: dữ liệu, mã nguồn hoặc tài liệu đã có trên GitHub, đủ xác nhận hoàn thành phần triển khai trong phạm vi ghi bên dưới.
@@ -65,13 +65,12 @@ Cập nhật sau đối chiếu artifacts ngày 11/10/2026. Các ô hoàn thành
 | Deep Hedging GRU | Biến thể dự kiến | Chưa triển khai; config không phải implementation |
 | DH + transaction-cost penalty | Cải tiến | Đã triển khai normalized turnover penalty lambda_tc=0.001; không phải training trực tiếp theo toàn bộ phí/thuế/slippage thực tế |
 
-## Bằng chứng cần bổ sung để đóng các mục thực nghiệm
-- Training histories, convergence curves và sanity-check reports của bước 17–18.
-- Fine-tuning report/history, best epoch và checkpoint metadata của bước 22.
-- Baseline/OOS/cost/regime/ablation/stress/full-market metrics JSON, tables CSV và figures.
-- Environment snapshot, hướng dẫn chạy theo thứ tự và kết quả kiểm chứng tái lập.
-- Checkpoint có thể cung cấp qua release/artifact cùng checksum và hướng dẫn tải; không bắt buộc commit binary lớn vào Git.
-- Không cần mở lại hoặc retune TEST chỉ để bổ sung đầu ra đã có.
+## Trạng thái bằng chứng và các giới hạn còn lại
+- Kết quả pretraining, fine-tuning, baseline, OOS, cost, regime, stress và full-market simulator hiện đã có JSON/CSV/biểu đồ trong `results/`; checkpoint được ghi nhận bằng SHA-256 nhưng tệp checkpoint không được commit trực tiếp vào GitHub.
+- Các artifacts này đã được đối chiếu về sự hiện diện và tính nhất quán với mã nguồn; chưa có lần tái chạy độc lập từ đầu trong môi trường sạch. Vì vậy, checklist xác nhận phần triển khai và kết quả được bàn giao, không xác nhận khả năng tái lập độc lập.
+- Phần ablation chi phí giao dịch đã có các kịch bản chi phí và slippage 0.5/1/2/4 ticks. Kịch bản 4 ticks chỉ là stress proxy; phân tích thanh khoản thực nghiệm bằng spread, độ sâu sổ lệnh, participation rate hoặc execution fills còn thiếu.
+- GRU, nhiều random seeds và khoảng tin cậy/kiểm định suy luận chưa được triển khai; đây là giới hạn nghiên cứu hiện tại, không được suy diễn là đã hoàn tất.
+- Không mở lại TEST hoặc điều chỉnh mô hình dựa trên các kết quả TEST đã công bố.
 
 ## Ghi chú phương pháp sau khi mở TEST
 - Theo methodology, REAL TEST 2025-01-02 → 2026-09-29 đã được mở ở bước 23 sau khi model được freeze.
